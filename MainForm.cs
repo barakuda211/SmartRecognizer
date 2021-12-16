@@ -258,19 +258,20 @@ namespace AForge.WindowsForms
                 type++;
             }
             type = 0;
-            foreach (var directory in Directory.GetDirectories(real_ex_path))
-            {
-                if (type >= symbolsCount)
-                    break;
-
-                foreach (var file in Directory.GetFiles(directory))
+            if (Directory.Exists(real_ex_path))
+                foreach (var directory in Directory.GetDirectories(real_ex_path))
                 {
-                    var img = new Bitmap(file);
-                    newSample = new Sample(imgToData(img), symbolsCount, (LetterType)type);
-                    samples.AddSample(newSample);
+                    if (type >= symbolsCount)
+                        break;
+
+                    foreach (var file in Directory.GetFiles(directory))
+                    {
+                        var img = new Bitmap(file);
+                        newSample = new Sample(imgToData(img), symbolsCount, (LetterType)type);
+                        samples.AddSample(newSample);
+                    }
+                    type++;
                 }
-                type++;
-            }
             var acc = net.TrainOnDataSet(samples, epoches, max_error, true);
 
             outputLabel.Text = "Точность: " + acc/100.0;
@@ -357,6 +358,21 @@ namespace AForge.WindowsForms
                 }
                 type++;
             }
+            type = 0;
+            if (Directory.Exists(real_ex_path))
+                foreach (var directory in Directory.GetDirectories(real_ex_path))
+                {
+                    if (type >= symbolsCount)
+                        break;
+
+                    foreach (var file in Directory.GetFiles(directory))
+                    {
+                        var img = new Bitmap(file);
+                        newSample = new Sample(imgToData(img), symbolsCount, (LetterType)type);
+                        samples.AddSample(newSample);
+                    }
+                    type++;
+                }
             outputLabel.Text = "Процент правильного распознавания: " + net.TestOnDataSet(samples)*100;
         }
 
